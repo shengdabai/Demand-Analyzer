@@ -1,0 +1,28 @@
+{
+  "name": "demand-analyzer",
+  "version": "1.0.0",
+  "description": "智能需求分析工具 - 分析需求是否满足高频、广泛、刚需三要素",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000",
+    "test": "node --test test/*.test.cjs"
+  },
+  "keywords": [
+    "需求分析",
+    "产品管理",
+    "创业工具",
+    "市场分析",
+    "产品规划"
+  ],
+  "author": "需求分析工具团队",
+  "license": "MIT",
+  "homepage": "https://github.com/your-username/demand-analyzer",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/demand-analyzer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/demand-analyzer/issues"
+  }
+}

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta name="description" content="需求分析工具 - 高频、广泛、刚需分析">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>需求分析工具 - 高频、广泛、刚需分析</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>需求分析工具</h1>
+            <p>智能分析需求是否满足高频、广泛、刚需三要素</p>
+        </header>
+
+        <main>
+            <section class="input-section">
+                <h2>输入您的需求</h2>
+                <div class="input-group">
+                    <label for="demand-title">需求标题：</label>
+                    <input type="text" id="demand-title" placeholder="例如：在线学习平台">
+                </div>
+                <div class="input-group">
+                    <label for="demand-description">需求描述：</label>
+                    <textarea id="demand-description" rows="4" placeholder="详细描述您的需求..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="target-users">目标用户群体：</label>
+                    <input type="text" id="target-users" placeholder="例如：学生、职场人士">
+                </div>
+                <div class="input-group">
+                    <label for="market-size">预计市场规模：</label>
+                    <select id="market-size">
+                        <option value="">请选择</option>
+                        <option value="small">小众（<10万用户）</option>
+                        <option value="medium">中等（10-100万用户）</option>
+                        <option value="large">大规模（100-1000万用户）</option>
+                        <option value="huge">巨大（>1000万用户）</option>
+                    </select>
+                </div>
+                <button id="analyze-btn" class="analyze-btn">开始分析</button>
+            </section>
+
+            <section class="results-section" id="results-section" style="display: none;">
+                <h2>分析结果</h2>
+                <div class="analysis-overview">
+                    <div class="score-display">
+                        <div class="score-item">
+                            <span class="score-label">总体评分</span>
+                            <span class="score-value" id="total-score">0</span>
+                            <span class="score-max">/100</span>
+                        </div>
+                    </div>
+                    <div class="recommendation" id="recommendation">
+                        <h3>建议</h3>
+                        <p id="recommendation-text"></p>
+                    </div>
+                </div>
+
+                <div class="detailed-analysis">
+                    <div class="analysis-card">
+                        <h3>📈 高频性分析</h3>
+                        <div class="score-bar">
+                            <div class="score-fill" id="high-frequency-score"></div>
+                        </div>
+                        <div class="score-detail">
+                            <span>得分：<span id="high-frequency-value">0</span>/33</span>
+                        </div>
+                        <div class="analysis-points" id="high-frequency-points"></div>
+                    </div>
+
+                    <div class="analysis-card">
+                        <h3>🌐 广泛性分析</h3>
+                        <div class="score-bar">
+                            <div class="score-fill" id="wide-reach-score"></div>
+                        </div>
+                        <div class="score-detail">
+                            <span>得分：<span id="wide-reach-value">0</span>/33</span>
+                        </div>
+                        <div class="analysis-points" id="wide-reach-points"></div>
+                    </div>
+
+                    <div class="analysis-card">
+                        <h3>🎯 刚需性分析</h3>
+                        <div class="score-bar">
+                            <div class="score-fill" id="essential-need-score"></div>
+                        </div>
+                        <div class="score-detail">
+                            <span>得分：<span id="essential-need-value">0</span>/34</span>
+                        </div>
+                        <div class="analysis-points" id="essential-need-points"></div>
+                    </div>
+                </div>
+
+                <div class="optimization-suggestions">
+                    <h3>优化建议</h3>
+                    <div id="optimization-list"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
