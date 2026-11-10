@@ -154,7 +154,7 @@ class DemandAnalyzer {
         });
 
         // 市场规模加分
-        if (marketSize && this.marketSizeScores[marketSize]) {
+        if (Object.hasOwn(this.marketSizeScores, marketSize)) {
             score += this.marketSizeScores[marketSize];
             points.push(`✓ 市场规模加分 (+${this.marketSizeScores[marketSize]}分)`);
         }
@@ -334,17 +334,29 @@ class DemandAnalyzer {
         scoreFill.style.width = `${(analysis.score / maxScore) * 100}%`;
 
         const pointsContainer = document.getElementById(`${prefix}-points`);
-        pointsContainer.innerHTML = '<ul>' + analysis.points.map(point => `<li>${point}</li>`).join('') + '</ul>';
+        const list = document.createElement('ul');
+        analysis.points.forEach(point => {
+            const item = document.createElement('li');
+            item.textContent = point;
+            list.appendChild(item);
+        });
+        pointsContainer.replaceChildren(list);
     }
 
     displayOptimizations(optimizations) {
         const container = document.getElementById('optimization-list');
-        container.innerHTML = optimizations.map(opt => `
-            <div class="suggestion-item">
-                <h4>${opt.title}</h4>
-                <p>${opt.description}</p>
-            </div>
-        `).join('');
+        const suggestions = optimizations.map(opt => {
+            const suggestion = document.createElement('div');
+            suggestion.className = 'suggestion-item';
+            const title = document.createElement('h4');
+            title.textContent = opt.title;
+            const description = document.createElement('p');
+            description.textContent = opt.description;
+            suggestion.appendChild(title);
+            suggestion.appendChild(description);
+            return suggestion;
+        });
+        container.replaceChildren(...suggestions);
     }
 
     showNotification(message, type = 'info') {

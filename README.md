@@ -30,7 +30,7 @@ git clone <repository-url>
 cd demand-analyzer
 
 # 直接使用
-python -m http.server 8000
+python3 -m http.server --bind 127.0.0.1 8000
 # 或使用其他本地服务器
 ```
 
