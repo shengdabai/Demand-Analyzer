@@ -6,10 +6,20 @@ const vm = require('node:vm');
 
 function loadAnalyzer() {
     const elements = new Map();
+    function createElement(tagName) {
+        return {
+            tagName, style: {}, children: [], textContent: '',
+            addEventListener() {},
+            appendChild(child) { this.children.push(child); },
+            replaceChildren(...children) { this.children = children; },
+            set innerHTML(value) { throw new Error('HTML parsing is not allowed'); }
+        };
+    }
     const document = {
         addEventListener() {},
+        createElement,
         getElementById(id) {
-            if (!elements.has(id)) elements.set(id, { style: {}, addEventListener() {} });
+            if (!elements.has(id)) elements.set(id, createElement('div'));
             return elements.get(id);
         }
     };
@@ -52,4 +62,49 @@ test('market size affects reach only and scores stay within 100', () => {
     assert.equal(small.essentialNeed.score, huge.essentialNeed.score);
     assert.ok(huge.total <= 100);
     assert.ok(huge.wideReach.score >= small.wideReach.score);
+});
+
+test('unknown market sizes, including inherited property names, earn no points', () => {
+    const { analyzer } = loadAnalyzer();
+    for (const marketSize of ['', 'unknown', 'toString', 'constructor', '__proto__']) {
+        const result = analyzer.performAnalysis('工具', '描述', '', marketSize);
+        assert.equal(result.total, 0, marketSize);
+        assert.equal(result.wideReach.points.length, 0, marketSize);
+    }
+    for (const [marketSize, score] of Object.entries({ small: 5, medium: 15, large: 25, huge: 33 })) {
+        assert.equal(analyzer.analyzeWideReach('', '', marketSize).score, score);
+    }
+});
+
+test('analysis points render markup as literal text and replace previous results', () => {
+    const { analyzer, document } = loadAnalyzer();
+    const payload = '<img src=x onerror=alert(1)> & <script>alert(2)</script>';
+    analyzer.displayAnalysisCard('wide-reach', { score: 0, points: [payload] });
+    const container = document.getElementById('wide-reach-points');
+    assert.equal(container.children.length, 1);
+    const [list] = container.children;
+    assert.equal(list.tagName, 'ul');
+    assert.equal(list.children[0].tagName, 'li');
+    assert.equal(list.children[0].textContent, payload);
+    assert.equal(list.children[0].children.length, 0);
+    analyzer.displayAnalysisCard('wide-reach', { score: 0, points: [] });
+    assert.equal(container.children.length, 1);
+    assert.equal(container.children[0].children.length, 0);
+});
+
+test('optimization titles and descriptions render as text and clear stale suggestions', () => {
+    const { analyzer, document } = loadAnalyzer();
+    const title = '<svg onload=alert(1)>';
+    const description = '<a href="javascript:alert(2)">click</a>';
+    analyzer.displayOptimizations([{ title, description }]);
+    const container = document.getElementById('optimization-list');
+    assert.equal(container.children.length, 1);
+    const [suggestion] = container.children;
+    assert.equal(suggestion.className, 'suggestion-item');
+    assert.equal(suggestion.children[0].tagName, 'h4');
+    assert.equal(suggestion.children[0].textContent, title);
+    assert.equal(suggestion.children[1].tagName, 'p');
+    assert.equal(suggestion.children[1].textContent, description);
+    analyzer.displayOptimizations([]);
+    assert.equal(container.children.length, 0);
 });
